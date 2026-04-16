@@ -26,10 +26,38 @@ def parse_args():
     return p.parse_args()
 
 
+def get_listing_cards(page):
+    """Get listing cards — try button first (new Google Maps), then a (old), then aria-label."""
+    # New Google Maps uses <button> for cards
+    cards = page.query_selector_all('button[class*="hfpxzc"]')
+    if cards:
+        return cards
+    # Old Google Maps uses <a> for cards
+    cards = page.query_selector_all('a[class*="hfpxzc"]')
+    if cards:
+        return cards
+    # Fallback: any clickable element with aria-label in the feed
+    feed = page.query_selector('div[role="feed"]')
+    if feed:
+        cards = feed.query_selector_all('[aria-label][role="link"], [aria-label][class*="hfpxzc"]')
+        if cards:
+            return cards
+    return []
+
+
+def is_detail_page(page):
+    """Check if we're on a detail page instead of search results."""
+    # Has h1.DUwDvf = detail page name header
+    h1 = page.query_selector('h1.DUwDvf')
+    # No feed = probably detail page
+    feed = page.query_selector('div[role="feed"]')
+    return h1 is not None and feed is None
+
+
 def extract_one_listing(page, card_index):
     """Click a single card and extract its data. Returns dict or None."""
     # Re-query cards each time (DOM changes on scroll)
-    cards = page.query_selector_all('a[class*="hfpxzc"]')
+    cards = get_listing_cards(page)
     if card_index >= len(cards):
         return None
 
@@ -233,7 +261,7 @@ def scroll_results_panel(page, max_results, delay):
     scroll_attempts = 0
 
     while scroll_attempts < 30:
-        current_cards = page.query_selector_all('a[class*="hfpxzc"]')
+        current_cards = get_listing_cards(page)
         current_count = len(current_cards)
         print(f"  📋 Loaded {current_count} listings...")
 
@@ -323,7 +351,7 @@ def main():
         try:
             print("🌐 Opening Google Maps...")
             page.goto(search_url, wait_until="domcontentloaded", timeout=60000)
-            time.sleep(3)
+            time.sleep(5)
 
             # Handle cookie consent if present
             try:
@@ -333,6 +361,38 @@ def main():
                     time.sleep(1)
             except:
                 pass
+
+            # === DETECT REDIRECT TO DETAIL PAGE ===
+            if is_detail_page(page):
+                print("⚠ Redirected to detail page instead of search results!")
+                print("🔄 Trying coordinate-based search URL...")
+
+                # Try coordinate-based search as fallback
+                # Yogyakarta center: -7.7956, 110.3695
+                coord_url = f"https://www.google.com/maps/search/{quote_plus(search_query)}/@-7.7956,110.3695,13z"
+                page.goto(coord_url, wait_until="domcontentloaded", timeout=60000)
+                time.sleep(5)
+
+                if is_detail_page(page):
+                    print("⚠ Still on detail page. Trying search via Google Maps homepage...")
+                    # Last resort: type query in search box
+                    page.goto("https://www.google.com/maps", wait_until="domcontentloaded", timeout=60000)
+                    time.sleep(3)
+                    search_box = page.query_selector('input[name="q"], input#searchboxinput')
+                    if search_box:
+                        search_box.fill(search_query)
+                        search_box.press("Enter")
+                        time.sleep(5)
+
+            # Final check
+            cards = get_listing_cards(page)
+            if not cards and not is_detail_page(page):
+                print("⚠ No listing cards found. Page might not have loaded correctly.")
+                print(f"   Current URL: {page.url}")
+                # Take screenshot for debugging
+                debug_path = str(out_path).replace('.csv', '_debug.png')
+                page.screenshot(path=debug_path)
+                print(f"   Debug screenshot: {debug_path}")
 
             # Scroll to load results
             print("📜 Scrolling to load listings...")

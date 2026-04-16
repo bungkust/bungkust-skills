@@ -86,6 +86,17 @@ CSV/JSON dengan fields:
 | `chromium failed to launch` | `sudo apt install libnss3 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libgbm1 libasound2` |
 | `timeout` | Google Maps loading lambat, coba tambah timeout atau cek network |
 | `no results` | Coba query yang lebih spesifik |
+| `0 data / CSS selector error` | Google Maps pakai `button` bukan `a` — sudah di-fix (auto-detect) |
+| `redirect ke detail page` | Auto-retry dengan coordinate URL + search box fallback |
+
+## Changelog
+
+### 2026-04-16 — Robust Selector + Redirect Fix
+- **Fix**: Selector `a[class*="hfpxzc"]` → auto-detect `button` (new) / `a` (old) / aria-label fallback
+- **Fix**: Handle redirect ke detail page → auto-retry dengan coordinate-based URL + search box
+- **New**: `get_listing_cards()` — unified card detection
+- **New**: `is_detail_page()` — detect if redirected to single listing
+- **New**: Debug screenshot saved if no cards found
 
 ---
 *Made with ❤️ by @bungkust*
