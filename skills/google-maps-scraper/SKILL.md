@@ -41,7 +41,7 @@ python gmaps_scraper.py "tempat wisata" "Bali" --max 15
 |-----|---------|-------------|
 | `query` | required | Search query (e.g. "coffee shop") |
 | `location` | required | Location (e.g. "Yogyakarta") |
-| `--max` | 20 | Max results |
+| `--max` | 50 | Max results |
 | `--output, -o` | auto | Output CSV path |
 | `--headless` | True | Run without browser UI |
 | `--no-headless` | - | Show browser (debug) |
@@ -93,10 +93,18 @@ CSV/JSON dengan fields:
 
 ### 2026-04-16 — Robust Selector + Redirect Fix
 - **Fix**: Selector `a[class*="hfpxzc"]` → auto-detect `button` (new) / `a` (old) / aria-label fallback
-- **Fix**: Handle redirect ke detail page → auto-retry dengan coordinate-based URL + search box
+- **Fix**: Handle redirect ke detail page → auto-retry dengan coordinate URL + search box
 - **New**: `get_listing_cards()` — unified card detection
 - **New**: `is_detail_page()` — detect if redirected to single listing
 - **New**: Debug screenshot saved if no cards found
+
+### 2026-04-16 — URL-Based Extraction (v2)
+- **Fix**: Click-based extraction only got 7 results (DOM breaks after clicking)
+- **New**: `get_card_links()` — collect all place URLs first, then visit one-by-one
+- **New**: `extract_from_detail()` — extract data when already on a place URL
+- **New**: `extract_listings_click()` — fallback click-based approach
+- **Result**: 7 → 45+ results per search
+- **Default**: `--max` changed from 20 to 50
 
 ---
 *Made with ❤️ by @bungkust*
