@@ -21,6 +21,12 @@ Atau kalau udah ada Hermes, skip ke Step 2.
 
 ### Step 2: Install Skill
 
+**Gampangnya — tinggal chat ke AI kamu:**
+```
+❯ "coba install skill ini https://github.com/bungkust/bungkust-skills/tree/main/skills/google-maps-scraper"
+```
+
+Atau manual via CLI:
 ```bash
 # Install semua skills (recommended)
 npx skills add bungkust/bungkust-skills
