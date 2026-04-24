@@ -17,6 +17,7 @@ AI Agent Skills by [@bungkust](https://github.com/bungkust) — tools for daily 
 | 🎯 | [job-fit-analyzer](skills/job-fit-analyzer/) | Analisis kecocokan CV dengan job description | "job fit", "skill gap", "evaluasi lowongan" |
 | 🏸 | [badminton-slot-checker](skills/badminton-slot-checker/) | Cek jadwal dan slot kosong lapangan badminton | "jadwal badminton", "slot kosong" |
 | 💰 | [cashflow-tracker](skills/cashflow-tracker/) | Catat dan track cash flow harian | "catat pengeluaran", "cashflow" |
+| 🛒 | [fb-marketplace-scraper](skills/fb-marketplace-scraper/) | Scrape listing dari Facebook Marketplace — title, harga, lokasi, info penjual | "scrape facebook marketplace", "fb marketplace" |
 
 ---
 
@@ -66,7 +67,17 @@ bungkust-skills/
 │   │   └── SKILL.md
 │   ├── badminton-slot-checker/
 │   │   └── SKILL.md
-│   └── cashflow-tracker/
+│   ├── cashflow-tracker/
+│   │   └── SKILL.md
+│   ├── bungkus-eat-token/
+│   │   └── SKILL.md
+│   ├── research-to-brain-vault/
+│   │   └── SKILL.md
+│   ├── slavingia-full-analysis/
+│   │   └── SKILL.md
+│   ├── social-media-analyzer/
+│   │   └── SKILL.md
+│   └── fb-marketplace-scraper/
 │       └── SKILL.md
 ├── README.md
 └── LICENSE
