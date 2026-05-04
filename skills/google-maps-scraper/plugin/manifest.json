@@ -1,0 +1,14 @@
+{
+  "name": "google-maps-scraper",
+  "label": "GMaps Scraper",
+  "description": "Scrape Google Maps listings by daerah with table view output",
+  "icon": "Search",
+  "version": "1.0.0",
+  "tab": {
+    "path": "/gmaps-scraper",
+    "position": "after:skills"
+  },
+  "slots": [],
+  "entry": "dist/index.js",
+  "api": "plugin_api.py"
+}

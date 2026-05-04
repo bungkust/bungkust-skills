@@ -1,6 +1,13 @@
 # 🗺️ Google Maps Scraper — HOWTO
 
-Cara install dan pakai skill scrape Google Maps.
+Cara install dan pakai skill + dashboard plugin untuk scrape Google Maps.
+
+---
+
+## 🎯 Yang Didapat
+
+1. **Dashboard Plugin** — tab GMaps Scraper di Hermes dashboard (UI table + export CSV)
+2. **AI Skill** — chat ke AI agent untuk scrape via perintah natural
 
 ---
 
@@ -8,131 +15,119 @@ Cara install dan pakai skill scrape Google Maps.
 
 - Python 3.10+
 - pip
+- Hermes Agent sudah terinstall
+
+---
 
 ## 🚀 Install
 
-### Step 1: Install Hermes Agent
+### Step 1: Clone Repo
 
 ```bash
-curl -sSL https://hermes.ai/install | bash
+git clone https://github.com/bungkust/bungkust-skills.git ~/bungkust-skills
 ```
 
-Atau kalau udah ada Hermes, skip ke Step 2.
+### Step 2: Setup Dashboard Plugin
 
-### Step 2: Install Skill
+Dashboard plugin perlu kamu copy manual ke folder plugin Hermes:
 
-**Gampangnya — tinggal chat ke AI kamu:**
-```
-❯ "coba install skill ini https://github.com/bungkust/bungkust-skills/tree/main/skills/google-maps-scraper"
-```
-
-Atau manual via CLI:
 ```bash
-# Install semua skills (recommended)
-npx skills add bungkust/bungkust-skills
+# Copy plugin files
+PLUGIN_SRC="~/bungkust-skills/skills/google-maps-scraper/plugin"
+PLUGIN_DST="~/.hermes/hermes-agent/plugins/google-maps-scraper-dashboard"
 
-# Atau install skill ini aja
-npx skills add bungkust/bungkust-skills --skill google-maps-scraper
+mkdir -p "$PLUGIN_DST/dashboard"
+cp "$PLUGIN_SRC/manifest.json" "$PLUGIN_DST/dashboard/"
+cp "$PLUGIN_SRC/plugin_api.py" "$PLUGIN_DST/dashboard/"
+mkdir -p "$PLUGIN_DST/dashboard/dist"
+cp "$PLUGIN_SRC/dist/index.js" "$PLUGIN_DST/dashboard/dist/"
 ```
 
-### Step 3: Install Dependencies
+### Step 3: Setup Scraper Directory
+
+Scraper core perlu ada di `/root/google-maps-scraper/`:
+
+```bash
+SCRAPER_SRC="~/bungkust-skills/skills/google-maps-scraper/gmaps_scraper.py"
+SCRAPER_DST="/root/google-maps-scraper"
+
+sudo mkdir -p "$SCRAPER_DST"
+sudo cp "$SCRAPER_SRC" "$SCRAPER_DST/gmaps_scraper.py"
+sudo mkdir -p "$SCRAPER_DST/output"
+sudo chmod 755 "$SCRAPER_DST/gmaps_scraper.py"
+```
+
+### Step 4: Install Dependencies
 
 ```bash
 pip install playwright
 python -m playwright install chromium
 ```
 
-### Step 4: Test
+VPS/headless server butuh extra deps:
+```bash
+sudo apt install -y libnss3 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libgbm1 libasound2
+```
+
+### Step 5: Restart Hermes
 
 ```bash
-hermes run "Cari coffee shop di Jogja dari Google Maps"
+# Restart hermes-gateway untuk load plugin baru
+sudo systemctl restart hermes-gateway
+
+# Atau kalau pakai hermes langsung:
+hermes restart
 ```
+
+### Step 6: Verify
+
+Buka Hermes dashboard →你应该 lihat tab **GMaps Scraper** di sebelah kanan tab Skills.
 
 ---
 
 ## 🎯 Cara Pakai
 
-### Basic Search
+### Via Dashboard Plugin
+
+1. Buka Hermes dashboard → tab **GMaps Scraper**
+2. Isi query (e.g. "coffee shop") dan daerah (e.g. "Yogyakarta")
+3. Klik **🔍 Mulai Search**
+4. Tunggu hasil → table view dengan rating, reviews, address
+5. Klik **📥 Export CSV** untuk download
+
+### Via AI Chat
+
 ```
 "Cari coffee shop di Jogja dari Google Maps"
-"Scrape restoran di Jakarta Selatan"
-"Tempat wisata di Bali"
-```
-
-### Dengan Filter
-```
-"Cari coffee shop di Sleman yang buka sekarang"
-"Scrape warung makan deket UGM rating di atas 4"
-"Hotel di Jogja harga di bawah 500rb"
-"Restoran vegetarian di Jakarta yang open 24 jam"
-```
-
-### Export ke Format Lain
-```
-"Scrape coffee shop di Jogja, export ke CSV"
-"Cari restoran di Bandung, simpan ke Notion"
-"Scrape tempat wisata di Bali, export ke JSON"
+"Scrape restoran di Jakarta Selatan rating >4.5"
+"Tempat wisata di Bali yang buka 24 jam"
 ```
 
 ---
 
 ## 📊 Output
 
-Hasil scrape berupa data:
+Hasil scrape:
 
 | Field | Contoh |
 |-------|--------|
-| Nama | Kopi Kultur |
+| Name | Kopi Kultur |
 | Rating | 4.8 ⭐ |
-| Alamat | Jl. Kaliurang KM 5, Sleman |
-| Jam Buka | 08:00 - 22:00 |
-| Harga Range | Rp 25.000 - 50.000 |
+| Reviews | 1234 |
+| Category | Kedai Kopi |
+| Price_range | Rp 25–50 rb |
+| Address | Jl. Kaliurang KM 5, Sleman |
 | Phone | 0812-xxxx-xxxx |
-| Website | kopikultur.com |
-
----
-
-## ☁️ Bisa Dipake di Cloud?
-
-**YA!** Skill ini works di:
-
-| Environment | Status | Notes |
-|-------------|--------|-------|
-| Local (laptop/PC) | ✅ Works | Best performance |
-| VPS (Ubuntu) | ✅ Works | Butuh `playwright install chromium` |
-| Cloud Sandbox | ✅ Works | Hermes sandbox |
-| Docker | ✅ Works | Butuh chromium di container |
-
-### Install di VPS/Cloud:
-
-```bash
-# SSH ke VPS
-ssh user@your-vps
-
-# Install Hermes
-curl -sSL https://hermes.ai/install | bash
-
-# Install skill
-npx skills add bungkust/bungkust-skills --skill google-maps-scraper
-
-# Install dependencies
-pip install playwright
-python -m playwright install chromium
-# Kalau headless butuh extra deps:
-sudo apt install -y libnss3 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libgbm1 libasound2
-
-# Test
-hermes run "Cari coffee shop di Jogja"
-```
+| Hours | Buka · Tutup pukul 22.00 |
 
 ---
 
 ## ⚠️ Limitasi
 
 - Tanpa login Google: max ~20 results per search
-- Rate limit: jangan scrape terlalu cepat (delay 2-3 detik antar request)
-- Data bisa berubah sewaktu-waktu (Google update struktur)
-- Beberapa lokasi mungkin gak lengkap data-nya
+- Rate limit: jangan scrape terlalu cepat (delay 1.5s)
+- Google Maps struktur bisa berubah sewaktu-waktu
+- CSS selectors mungkin perlu update periodik
 
 ---
 
@@ -141,24 +136,41 @@ hermes run "Cari coffee shop di Jogja"
 | Problem | Fix |
 |---------|-----|
 | `playwright not found` | `pip install playwright && python -m playwright install chromium` |
-| `chromium failed to launch` | `sudo apt install libnss3 libatk-bridge2.0-0 libdrm2` |
-| `timeout` | Google Maps loading lambat, coba tambah timeout |
-| `no results` | Coba query yang lebih spesifik |
+| `chromium failed to launch` | `sudo apt install libnss3 libatk-bridge2.0-0 libdrm2 libxkbcommon0 libgbm1 libasound2` |
+| Tab GMaps Scraper gak muncul | Restart hermes-gateway, cek `~/.hermes/hermes-agent/plugins/` |
+| Timeout | Google Maps lambat — normal untuk first run |
+| No results | Query terlalu umum — coba lebih spesifik |
 
 ---
 
-## 💬 Cara Share
-
-Kasih link ini ke orang yang mau pake:
+## 📁 File Structure
 
 ```
-https://github.com/bungkust/bungkust-skills/blob/main/skills/google-maps-scraper/HOWTO.md
+~/.hermes/hermes-agent/plugins/google-maps-scraper-dashboard/
+└── dashboard/
+    ├── manifest.json      ← plugin definition
+    ├── plugin_api.py      ← FastAPI backend (/api/plugins/google-maps-scraper/)
+    └── dist/
+        └── index.js       ← React UI (table + CSV export)
+
+/root/google-maps-scraper/
+├── gmaps_scraper.py       ← Playwright scraper core
+└── output/                 ← cached results (JSON + CSV)
 ```
 
-Atau reply comment "mau":
-```
-Nih cara install + pakai: [link HOWTO]
-Gratis kok! ⭐
+---
+
+## 🔄 Update
+
+```bash
+cd ~/bungkust-skills && git pull
+
+# Copy ulang plugin files
+PLUGIN_SRC="~/bungkust-skills/skills/google-maps-scraper/plugin"
+cp -r "$PLUGIN_SRC/"* "~/.hermes/hermes-agent/plugins/google-maps-scraper-dashboard/dashboard/"
+
+# Restart
+sudo systemctl restart hermes-gateway
 ```
 
 ---
