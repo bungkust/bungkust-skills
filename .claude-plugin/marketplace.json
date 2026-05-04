@@ -1,0 +1,9 @@
+{
+  "owner": "bungkust",
+  "plugins": [
+    {
+      "source": ".",
+      "version": "latest"
+    }
+  ]
+}

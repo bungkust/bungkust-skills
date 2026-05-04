@@ -1,0 +1,17 @@
+{
+  "name": "bungkust-skills",
+  "version": "1.0.0",
+  "description": "AI Agent Skills by @bungkust \u2014 tools for daily life, career, and productivity",
+  "author": "bungkust",
+  "repository": "https://github.com/bungkust/bungkust-skills",
+  "license": "MIT",
+  "keywords": [
+    "hermes",
+    "ai-agent",
+    "career",
+    "google-maps",
+    "job-search",
+    "badminton",
+    "cashflow"
+  ]
+}
