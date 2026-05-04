@@ -19,6 +19,7 @@ AI Agent Skills by [@bungkust](https://github.com/bungkust) — tools for daily 
 | 💰 | [cashflow-tracker](skills/cashflow-tracker/) | Catat dan track cash flow harian | "catat pengeluaran", "cashflow" |
 | 🛒 | [fb-marketplace-scraper](skills/fb-marketplace-scraper/) | Scrape listing dari Facebook Marketplace — title, harga, lokasi, info penjual | "scrape facebook marketplace", "fb marketplace" |
 | 🧪 | [testcase-creation-guidelines](skills/data-science/testcase-creation-guidelines/) | Guidelines bikin TC BrowserStack + Airtable — title, steps, type/technique, field mapping | "bikin TC", "test case guideline", "review TC BrowserStack" |
+| 🔄 | [airtable-to-browserstack](skills/data-science/airtable-to-browserstack/) | Push TC dari Airtable ke BrowserStack — parse steps, map enum, bulk create per folder | "push TC ke BrowserStack", "airtable to BS", "sync TC" |
 | 🔬 | [research-to-brain-vault](skills/research-to-brain-vault/) | Auto-route hasil research ke Brain (summary) + Obsidian vault | "research", "simpan ke brain" |
 | 📊 | [slavingia-full-analysis](skills/slavingia-full-analysis/) | Run all 10 Slavingia business skills untuk komprehensif analisis | "slavingia", "analisis bisnis" |
 | 📱 | [social-media-analyzer](skills/social-media-analyzer/) | Audit akun sosmed, extract konten, engagement analysis | "sosmed", "instagram", "threads analysis" |
@@ -76,8 +77,15 @@ bungkust-skills/
 │   ├── fb-marketplace-scraper/
 │   │   └── SKILL.md
 │   ├── data-science/
-│   │   └── testcase-creation-guidelines/
-│   │       └── SKILL.md
+│   │   ├── testcase-creation-guidelines/
+│   │   │   └── SKILL.md
+│   │   └── airtable-to-browserstack/
+│   │       ├── SKILL.md
+│   │       ├── README.md
+│   │       ├── references/
+│   │       │   └── admin-dashboard-base.md
+│   │       └── scripts/
+│   │           └── push_template.py
 │   ├── research-to-brain-vault/
 │   │   └── SKILL.md
 │   ├── slavingia-full-analysis/
